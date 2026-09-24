@@ -20,7 +20,6 @@ The firmware acquires sensor data, processes the measurements, displays selected
 - ECG signal acquisition
 - Heart-rate measurement
 - OLED display
-- 16×2 LCD display
 - UART/serial communication
 - Bluetooth Low Energy communication
 - Sensor driver development
