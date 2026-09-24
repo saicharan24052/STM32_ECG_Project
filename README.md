@@ -28,7 +28,6 @@ The firmware acquires sensor data, processes the measurements, displays selected
 
 ---
 
-## System Block Diagram
 ## System Architecture
 
 ```mermaid
