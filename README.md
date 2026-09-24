@@ -65,7 +65,7 @@ The developed firmware was tested on the STM32H743ZI2 with the MAX30003 ECG AFE,
 The STM32H743ZI2 processes the temperature data obtained from the TMP117 and calculates heart rate from the ECG acquired through the MAX30003. The **temperature and heart rate** are displayed on the SSD1306 OLED.
 
 <p align="center">
-  <img src="images/results/temperature_heart_rate_oled.png" width="450">
+  <img src="images/temperature_heart_rate_oled.png" width="450">
 </p>
 
 <p align="center">
@@ -78,7 +78,7 @@ The STM32H743ZI2 processes the temperature data obtained from the TMP117 and cal
 Sensor data is transmitted from the STM32H743ZI2 through the UART interface to a Windows PC. The serial connection is configured at a **baud rate of 115200**, and the received data can be monitored using PuTTY.
 
 <p align="center">
-  <img src="images/results/uart_putty_115200.png" width="750">
+  <img src="images/uart_putty_115200.png" width="750">
 </p>
 
 <p align="center">
@@ -91,7 +91,7 @@ Sensor data is transmitted from the STM32H743ZI2 through the UART interface to a
 The MAX30003 ECG Analog Front End is interfaced with the STM32H743ZI2 through SPI. The acquired ECG samples are transmitted through UART and visualized on a Windows PC using a Serial Analyzer.
 
 <p align="center">
-  <img src="images/results/ecg_serial_analyzer.png" width="750">
+  <img src="images/ecg_serial_analyzer.png" width="750">
 </p>
 
 <p align="center">
@@ -110,7 +110,7 @@ The BLE data includes:
 - Heart Rate
 
 <p align="center">
-  <img src="images/results/ble_nrf_connect.png" width="450">
+  <img src="images/ble_nrf_connect.png" width="450">
 </p>
 
 <p align="center">
@@ -123,7 +123,7 @@ The BLE data includes:
 The project was developed and tested as a working hardware prototype. The final implementation demonstrates the integration of the STM32H743ZI2, physiological sensors, OLED display, serial communication, and BLE interface.
 
 <p align="center">
-  <img src="images/results/final_prototype.png" width="650">
+  <img src="images/final_prototype.png" width="650">
 </p>
 
 <p align="center">
