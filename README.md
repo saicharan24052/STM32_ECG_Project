@@ -29,46 +29,33 @@ The firmware acquires sensor data, processes the measurements, displays selected
 ---
 
 ## System Block Diagram
+## System Architecture
 
-```text
-                         ┌──────────────────────┐
-                         │    STM32H743ZI2      │
-                         │    Microcontroller   │
-                         └──────────┬───────────┘
-                                    │
-              ┌─────────────────────┼─────────────────────┐
-              │                     │                     │
-              │                     │                     │
-             SPI                   I²C                   UART
-              │                     │                     │
-              ▼                     ▼                     ▼
-      ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
-      │   MAX30003   │      │    TMP117    │      │ X-NUCLEO     │
-      │    ECG AFE   │      │ Temperature  │      │  BNRG2A1     │
-      │              │      │   Sensor     │      │ BLE Module   │
-      └──────┬───────┘      └──────┬───────┘      └──────┬───────┘
-             │                     │                     │
-             │                     │                     ▼
-             │                     │             ┌──────────────┐
-             │                     │             │ Mobile Device│
-             │                     │             │  BLE Client  │
-             │                     │             └──────────────┘
-             │                     │
-             │                     ▼
-             │              ┌──────────────┐
-             │              │   SSD1306    │
-             │              │ OLED Display │
-             │              └──────────────┘
-             │
-             ▼
-      ┌────────────────┐
-      │ ECG Processing │
-      │ & Heart Rate   │
-      │ Calculation    │
-      └───────┬────────┘
-              │
-              ▼
-       ┌───────────────┐
-       │ UART / Serial │
-       │   Analyzer    │
-       └───────────────┘
+```mermaid
+flowchart LR
+
+    ECG["MAX30003<br/>ECG Analog Front End"]
+    TEMP["TMP117<br/>Temperature Sensor"]
+
+    MCU["STM32H743ZI2<br/>Microcontroller<br/><br/>ECG Acquisition<br/>Heart-Rate Calculation<br/>Temperature Processing<br/>Data Handling"]
+
+    OLED["SSD1306<br/>0.96-inch OLED Display<br/><br/>Temperature<br/>Heart Rate"]
+
+    UART["UART / USART"]
+    PC["Windows PC<br/>Serial Analyzer<br/><br/>ECG Waveform"]
+
+    BLE["X-NUCLEO BNRG2A1<br/>Bluetooth Low Energy Module"]
+
+    MOBILE["Mobile Device<br/>BLE Client<br/><br/>ECG<br/>Temperature<br/>Heart Rate"]
+
+    ECG -->|"SPI<br/>ECG Data"| MCU
+    TEMP -->|"I²C<br/>Temperature Data"| MCU
+
+    MCU -->|"Temperature +<br/>Heart Rate"| OLED
+
+    MCU -->|"ECG Data"| UART
+    UART -->|"Serial Data"| PC
+
+    MCU -->|"ECG + Temperature +<br/>Heart Rate"| BLE
+    BLE -->|"Bluetooth Low Energy"| MOBILE
+```
