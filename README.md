@@ -1,83 +1,74 @@
-# Medical/Clinical Grade Physiological Parameter Monitoring System
+# Wearable Physiological Monitoring System
 
-A wearable physiological monitoring system designed to acquire and display vital parameters such as **ECG, heart rate, temperature, and SpO₂**, with wireless data transmission through **Bluetooth Low Energy (BLE)**.
+Embedded C firmware for a wearable physiological monitoring system based on the **STM32H743ZI2** microcontroller.
 
-The project combines physiological sensors, a microcontroller-based embedded system, local displays, serial data visualization, and BLE communication to explore a compact and portable health-monitoring platform.
+The project contains drivers and application code for interfacing with physiological sensors and peripherals used for **temperature monitoring, ECG acquisition, heart-rate measurement, display, serial data visualization, and Bluetooth Low Energy (BLE) communication**.
+
+The main focus of this repository is the **embedded firmware and peripheral interfacing** developed for the prototype.
 
 ---
 
-## Overview
+## Project Overview
 
-Continuous monitoring of physiological parameters can be useful for observing a user's health condition outside conventional clinical environments.
+The system uses the STM32H743ZI2 microcontroller as the main processing unit. Different sensors and peripherals are interfaced through standard digital communication protocols such as **SPI, I²C, UART, and GPIO**.
 
-This project focuses on the design and development of a wearable monitoring system capable of interfacing with physiological sensors and presenting the acquired data locally as well as transmitting selected parameters wirelessly to a mobile device.
+The firmware acquires sensor data, processes the measurements, displays selected values locally, and transfers data through BLE.
 
-The system architecture includes:
+### Main Functions
 
-- ECG acquisition
+- Temperature measurement
+- ECG signal acquisition
 - Heart-rate measurement
-- Body-temperature measurement
-- SpO₂ measurement architecture
-- OLED/LCD-based local display
-- Serial visualization of ECG data
+- OLED display
+- 16×2 LCD display
+- UART/serial communication
 - Bluetooth Low Energy communication
-- Custom schematic and PCB design
-
-The developed prototype was validated through sensor interfacing and real-time measurements, with the implemented work reaching the ECG measurement stage.
+- Sensor driver development
+- STM32 peripheral configuration and interfacing
 
 ---
 
-## Key Features
-
-- Real-time ECG signal acquisition
-- Heart-rate measurement from ECG
-- Temperature measurement using TMP117
-- OLED display for physiological data
-- 16x2 LCD interfacing
-- ECG waveform visualization through a serial analyzer
-- Bluetooth Low Energy communication
-- Mobile-device data monitoring
-- SPI and I²C peripheral interfacing
-- Custom schematic and PCB design
-
----
-
-## System Architecture
+## System Block Diagram
 
 ```text
-                     ┌──────────────────────────┐
-                     │     Physiological        │
-                     │        Sensors           │
-                     └────────────┬─────────────┘
-                                  │
-             ┌────────────────────┼────────────────────┐
-             │                    │                    │
-             ▼                    ▼                    ▼
-      ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
-      │  MAX30003   │      │   TMP117    │      │  MAX30101   │
-      │     ECG     │      │ Temperature │      │   SpO₂ / HR │
-      │     AFE     │      │   Sensor    │      │   Sensor    │
-      └──────┬──────┘      └──────┬──────┘      └──────┬──────┘
-             │ SPI                │ I²C                │ SPI
-             │                    │                    │
-             └────────────────────┼────────────────────┘
-                                  ▼
-                     ┌──────────────────────────┐
-                     │      Microcontroller     │
-                     │     Data Acquisition &   │
-                     │        Processing        │
-                     └────────────┬─────────────┘
-                                  │
-                 ┌────────────────┼────────────────┐
-                 │                │                │
-                 ▼                ▼                ▼
-          ┌────────────┐   ┌────────────┐   ┌──────────────┐
-          │ OLED / LCD │   │   UART     │   │ BLE Module   │
-          │  Display   │   │  / Serial  │   │              │
-          └────────────┘   └─────┬──────┘   └──────┬───────┘
-                                 │                 │
-                                 ▼                 ▼
-                          ┌─────────────┐   ┌──────────────┐
-                          │ PC / Serial │   │ Mobile Device│
-                          │   Analyzer  │   │    Client    │
-                          └─────────────┘   └──────────────┘
+                         ┌──────────────────────┐
+                         │    STM32H743ZI2      │
+                         │    Microcontroller   │
+                         └──────────┬───────────┘
+                                    │
+              ┌─────────────────────┼─────────────────────┐
+              │                     │                     │
+              │                     │                     │
+             SPI                   I²C                   UART
+              │                     │                     │
+              ▼                     ▼                     ▼
+      ┌──────────────┐      ┌──────────────┐      ┌──────────────┐
+      │   MAX30003   │      │    TMP117    │      │ X-NUCLEO     │
+      │    ECG AFE   │      │ Temperature  │      │  BNRG2A1     │
+      │              │      │   Sensor     │      │ BLE Module   │
+      └──────┬───────┘      └──────┬───────┘      └──────┬───────┘
+             │                     │                     │
+             │                     │                     ▼
+             │                     │             ┌──────────────┐
+             │                     │             │ Mobile Device│
+             │                     │             │  BLE Client  │
+             │                     │             └──────────────┘
+             │                     │
+             │                     ▼
+             │              ┌──────────────┐
+             │              │   SSD1306    │
+             │              │ OLED Display │
+             │              └──────────────┘
+             │
+             ▼
+      ┌────────────────┐
+      │ ECG Processing │
+      │ & Heart Rate   │
+      │ Calculation    │
+      └───────┬────────┘
+              │
+              ▼
+       ┌───────────────┐
+       │ UART / Serial │
+       │   Analyzer    │
+       └───────────────┘
