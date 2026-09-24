@@ -27,131 +27,34 @@ The firmware acquires sensor data, processes the measurements, displays selected
 - STM32 peripheral configuration and interfacing
 
 ---
-
 ## System Architecture
 
 ```mermaid
-%%{init: {
-  "theme": "base",
-  "themeVariables": {
-    "fontFamily": "Arial",
-    "fontSize": "14px",
-    "primaryTextColor": "#1f2937",
-    "lineColor": "#6b7280",
-    "clusterBkg": "#f8fafc",
-    "clusterBorder": "#cbd5e1"
-  },
-  "flowchart": {
-    "curve": "basis",
-    "htmlLabels": true
-  }
-}}%%
-
 flowchart LR
 
-    %% =========================================================
-    %% SENSOR LAYER
-    %% =========================================================
+    ECG(["MAX30003<br/>ECG Analog Front End"])
+    TEMP(["TMP117<br/>Temperature Sensor"])
 
-    subgraph SENSORS["Physiological Sensors"]
-        direction TB
+    MCU(["STM32H743ZI2<br/>Microcontroller<br/><br/>ECG Processing<br/>Heart-Rate Calculation<br/>Data Handling"])
 
-        ECG["<b>MAX30003</b><br/>ECG Analog Front End<br/><br/><small>ECG Acquisition</small>"]
-        TEMP["<b>TMP117</b><br/>Temperature Sensor<br/><br/><small>Temperature Measurement</small>"]
-    end
+    OLED(["SSD1306<br/>0.96-inch OLED Display<br/><br/>Temperature<br/>Heart Rate"])
 
+    UART(["UART / USART"])
+    PC(["Windows PC<br/>Serial Analyzer<br/><br/>ECG Waveform"])
 
-    %% =========================================================
-    %% MICROCONTROLLER LAYER
-    %% =========================================================
+    BLE(["X-NUCLEO BNRG2A1<br/>Bluetooth Low Energy Module"])
 
-    subgraph MCU_BLOCK["Embedded Processing"]
-        direction TB
+    MOBILE(["Mobile Device<br/>BLE Client<br/><br/>ECG<br/>Temperature<br/>Heart Rate"])
 
-        MCU["<b>STM32H743ZI2</b><br/><br/><b>Microcontroller</b><br/><br/>• Sensor Data Acquisition<br/>• ECG Processing<br/>• Heart-Rate Calculation<br/>• Data Handling"]
-
-        HR["<b>Heart-Rate Calculation</b><br/><small>Derived from ECG signal</small>"]
-    end
-
-
-    %% =========================================================
-    %% LOCAL DISPLAY
-    %% =========================================================
-
-    OLED["<b>SSD1306</b><br/>0.96-inch OLED Display<br/><br/>Temperature<br/>Heart Rate"]
-
-
-    %% =========================================================
-    %% PC / SERIAL PATH
-    %% =========================================================
-
-    SERIAL["<b>UART / USART</b>"]
-    PC["<b>Windows PC</b><br/>Serial Analyzer<br/><br/>ECG Waveform"]
-
-
-    %% =========================================================
-    %% BLE PATH
-    %% =========================================================
-
-    BLE["<b>X-NUCLEO BNRG2A1</b><br/>Bluetooth Low Energy<br/>Module"]
-
-    MOBILE["<b>Mobile Device</b><br/>BLE Client<br/><br/>ECG<br/>Temperature<br/>Heart Rate"]
-
-
-    %% =========================================================
-    %% SENSOR → MCU
-    %% =========================================================
 
     ECG -->|"SPI<br/>ECG Data"| MCU
     TEMP -->|"I²C<br/>Temperature Data"| MCU
 
-
-    %% =========================================================
-    %% ECG → HEART RATE
-    %% =========================================================
-
-    MCU -->|"ECG Signal"| HR
-    HR -->|"Heart Rate"| MCU
-
-
-    %% =========================================================
-    %% MCU → OLED
-    %% =========================================================
-
     MCU -->|"Temperature +<br/>Heart Rate"| OLED
 
-
-    %% =========================================================
-    %% MCU → SERIAL ANALYZER
-    %% =========================================================
-
-    MCU -->|"ECG Data"| SERIAL
-    SERIAL -->|"Serial Data"| PC
-
-
-    %% =========================================================
-    %% MCU → BLE → MOBILE
-    %% =========================================================
+    MCU -->|"ECG Data"| UART
+    UART -->|"Serial Data"| PC
 
     MCU -->|"ECG + Temperature +<br/>Heart Rate"| BLE
     BLE -->|"Bluetooth Low Energy"| MOBILE
-
-
-    %% =========================================================
-    %% STYLING
-    %% =========================================================
-
-    classDef sensor fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0f172a;
-    classDef mcu fill:#ede9fe,stroke:#7c3aed,stroke-width:3px,color:#0f172a;
-    classDef processing fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#0f172a;
-    classDef display fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#0f172a;
-    classDef communication fill:#fce7f3,stroke:#db2777,stroke-width:2px,color:#0f172a;
-    classDef output fill:#f1f5f9,stroke:#475569,stroke-width:2px,color:#0f172a;
-
-    class ECG,TEMP sensor;
-    class MCU mcu;
-    class HR processing;
-    class OLED display;
-    class SERIAL,BLE communication;
-    class PC,MOBILE output;
 ```
